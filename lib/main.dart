@@ -8,6 +8,7 @@ import 'app.dart';
 var log = Logger(
   printer: PrettyPrinter(),
 );
+
 void main() {
   log.d('main dart start');
   BlocOverrides.runZoned(() => runApp(App()),

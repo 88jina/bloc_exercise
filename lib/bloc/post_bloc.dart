@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import '../model/post.dart';
@@ -11,6 +12,9 @@ import '../model/post.dart';
 part 'post_event.dart';
 part 'post_state.dart';
 
+var log = Logger(
+  printer: PrettyPrinter(),
+);
 const _postLimit = 20;
 const throttleDuration = Duration(milliseconds: 100);
 
@@ -18,8 +22,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   final http.Client httpClient;
 
   PostBloc({required this.httpClient}) : super(const PostState()) {
+    log.d("POSTBLOC CONSTRUCTOR STARTED ");
     on<PostFetched>(_onPostFetched,
         transformer: throttleDroppable(throttleDuration));
+    log.d("POSTBLOC CONSTRUCTOR END ");
   }
 
   EventTransformer<E> throttleDroppable<E>(Duration duration) {
@@ -29,6 +35,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future<void> _onPostFetched(
       PostFetched event, Emitter<PostState> emit) async {
+    log.d("_onPostFetched function started");
     if (state.hasReachedMax) return;
     try {
       if (state.status == PostStatus.initial) {
@@ -42,9 +49,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (_) {
       emit(state.copyWith(status: PostStatus.failure));
     }
+    log.d("_onPostFetched function ended");
   }
 
   Future<List<Post>> _fetchPosts([int startIndex = 0]) async {
+    log.d("_fetchPosts function started");
     final response = await httpClient.get(Uri.https(
       'jsonplaceholder.typicode.com',
       '/posts',

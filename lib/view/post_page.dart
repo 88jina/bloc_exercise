@@ -9,7 +9,7 @@ class PostPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('posts'),
+        title: const Text('알림'),
       ),
       body: BlocProvider(
         create: (_) => PostBloc(httpClient: http.Client())..add(PostFetched()),

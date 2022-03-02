@@ -15,6 +15,7 @@ class AlertListItem extends StatelessWidget {
         Icons.comment,
         color: Colors.grey,
         size: 20.0,
+        textDirection: TextDirection.ltr,
       ),
       title: Text(alert.main),
       isThreeLine: true,
